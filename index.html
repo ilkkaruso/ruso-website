@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ilkka Ruso - International Relations • Solutions Architecture • Art</title>
+    <meta name="description" content="Portfolio of Ilkka Ruso - Master's in International Relations, Solutions Architect, and Artist.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --midnight: #0f172a;
+            --navy: #1e293b;
+            --purple: #a855f7;
+            --cyan: #06b6d4;
+            --gold: #fbbf24;
+            --text-light: #e2e8f0;
+            --text-gray: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--midnight);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            animation: float 15s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, 50px) rotate(90deg); }
+            50% { transform: translate(0, 100px) rotate(180deg); }
+            75% { transform: translate(-50px, 50px) rotate(270deg); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4.5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--purple), var(--cyan), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(30deg); }
+        }
+
+        .hero .tagline {
+            font-size: 1.5em;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .hero-tags {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        .tag {
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            font-size: 0.95em;
+            transition: all 0.3s;
+        }
+
+        .tag:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: var(--purple);
+            transform: translateY(-3px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, 10px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .pillars {
+            padding: 100px 0;
+            background: var(--navy);
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .pillar-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pillar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--purple);
+            box-shadow: 0 20px 60px rgba(168, 85, 247, 0.3);
+        }
+
+        .pillar-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .pillar-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .pillar-card h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: var(--gold);
+        }
+
+        .pillar-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .pillar-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .pillar-card.expanded .pillar-details {
+            max-height: 1000px;
+        }
+
+        .expand-btn {
+            display: inline-block;
+            color: var(--cyan);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .expand-btn:hover {
+            color: var(--purple);
+            transform: translateX(5px);
+        }
+
+        .projects {
+            padding: 100px 0;
+            background: var(--midnight);
+        }
+
+        .section-title {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 1.2em;
+            margin-bottom: 60px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(6, 182, 212, 0.3);
+            border-color: var(--cyan);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(6, 182, 212, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%) rotate(45deg);
+            transition: transform 0.6s;
+        }
+
+        .project-card:hover .project-image::before {
+            transform: translateX(100%) rotate(45deg);
+        }
+
+        .project-content {
+            padding: 30px;
+        }
+
+        .project-content h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: var(--gold);
+        }
+
+        .project-tag {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid var(--purple);
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-right: 10px;
+            margin-bottom: 15px;
+        }
+
+        .interactive-section {
+            padding: 100px 0;
+            background: var(--navy);
+            text-align: center;
+        }
+
+        .chatbot-placeholder {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(168, 85, 247, 0.5);
+            border-radius: 20px;
+            transition: all 0.4s;
+        }
+
+        .chatbot-placeholder:hover {
+            border-color: var(--purple);
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .chatbot-placeholder h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: var(--cyan);
+        }
+
+        footer {
+            padding: 60px 0;
+            background: var(--midnight);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .contact-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+        }
+
+        .contact-link:hover {
+            color: var(--purple);
+            border-color: var(--purple);
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .hero .tagline {
+                font-size: 1.2em;
+            }
+
+            .pillars-grid, .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Ilkka Ruso</h1>
+            <p class="tagline">Where International Relations Meets Technology & Art</p>
+            <div class="hero-tags">
+                <span class="tag">🎓 MA International Relations</span>
+                <span class="tag">⚡ Solutions Architect</span>
+                <span class="tag">🎨 Artist</span>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <svg width="30" height="50" viewBox="0 0 30 50">
+                <rect x="5" y="5" width="20" height="40" rx="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="15" cy="15" r="3" fill="currentColor">
+                    <animate attributeName="cy" from="15" to="30" dur="1.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" from="1" to="0" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+    </section>
+
+    <section class="pillars">
+        <div class="container">
+            <h2 class="section-title">Three Pillars of Expertise</h2>
+            <p class="section-subtitle">Click each to explore in depth</p>
+            
+            <div class="pillars-grid">
+                <div class="pillar-card" onclick="togglePillar(this)">
+                    <div class="pillar-icon">🌍</div>
+                    <h3>International Relations</h3>
+                    <p>Master's degree focused on global governance, diplomacy, and cross-cultural understanding. Analyzing complex geopolitical landscapes and their impact on technology and society.</p>
+                    <span class="expand-btn">Read more →</span>
+                    <div class="pillar-details">
+                        <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <strong>Research Focus:</strong> Digital diplomacy, tech policy in international contexts, and the intersection of global governance with emerging technologies. My academic background provides unique insights into how technology solutions must navigate cultural, political, and regulatory landscapes.
+                        </p>
+                        <p style="margin-top: 15px;">
+                            <strong>Key Areas:</strong> EU digital policy, international cybersecurity frameworks, cross-border data governance, and the geopolitics of artificial intelligence.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pillar-card" onclick="togglePillar(this)">
+                    <div class="pillar-icon">⚡</div>
+                    <h3>Solutions Architecture</h3>
+                    <p>Designing scalable, efficient technology systems. Cloud infrastructure, microservices, and digital transformation strategies that bridge business needs with technical excellence.</p>
+                    <span class="expand-btn">Read more →</span>
+                    <div class="pillar-details">
+                        <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <strong>Technical Expertise:</strong> AWS, Azure, GCP cloud architectures, containerization with Docker and Kubernetes, serverless computing, and API design. Specializing in solutions that are not just technically sound but culturally aware and globally scalable.
+                        </p>
+                        <p style="margin-top: 15px;">
+                            <strong>Approach:</strong> Every technical decision considers security, compliance, user experience, and long-term maintainability. Building systems that work across borders and cultures.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pillar-card" onclick="togglePillar(this)">
+                    <div class="pillar-icon">🎨</div>
+                    <h3>Art & Creative Expression</h3>
+                    <p>Bringing creative thinking to technical problems. Visual storytelling, design thinking, and the artistic perspective that makes technology more human and accessible.</p>
+                    <span class="expand-btn">Read more →</span>
+                    <div class="pillar-details">
+                        <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <strong>Creative Philosophy:</strong> Technology without aesthetics is incomplete. My artistic practice informs everything from UX design decisions to data visualization, making complex systems intuitive and beautiful.
+                        </p>
+                        <p style="margin-top: 15px;">
+                            <strong>Mediums:</strong> Digital art, generative design, interactive installations, and exploring the boundary between code and canvas. Art isn't separate from technology—it's the bridge that makes it accessible.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <p class="section-subtitle">Where theory meets practice</p>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">🌐</div>
+                    <div class="project-content">
+                        <h3>Global Policy Analysis Platform</h3>
+                        <div>
+                            <span class="project-tag">International Relations</span>
+                            <span class="project-tag">Data Visualization</span>
+                        </div>
+                        <p>Interactive platform analyzing international tech policy trends across multiple jurisdictions. Combining political science research with data science.</p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">☁️</div>
+                    <div class="project-content">
+                        <h3>Cloud Migration Architecture</h3>
+                        <div>
+                            <span class="project-tag">Solutions Architecture</span>
+                            <span class="project-tag">AWS</span>
+                        </div>
+                        <p>Enterprise-scale migration from on-premise to cloud infrastructure. Microservices architecture with zero-downtime deployment strategy.</p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">🎭</div>
+                    <div class="project-content">
+                        <h3>Generative Art Collection</h3>
+                        <div>
+                            <span class="project-tag">Art</span>
+                            <span class="project-tag">Creative Code</span>
+                        </div>
+                        <p>Algorithmic art exploring the intersection of code, randomness, and aesthetic expression. Each piece is unique yet part of a coherent system.</p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">🤖</div>
+                    <div class="project-content">
+                        <h3>AI-Powered Research Assistant</h3>
+                        <div>
+                            <span class="project-tag">All Three</span>
+                            <span class="project-tag">AI/ML</span>
+                        </div>
+                        <p>Combining NLP with international relations research. An assistant that understands geopolitical context and helps analyze diplomatic documents.</p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">🔐</div>
+                    <div class="project-content">
+                        <h3>Cross-Border Security Framework</h3>
+                        <div>
+                            <span class="project-tag">Architecture</span>
+                            <span class="project-tag">Security</span>
+                        </div>
+                        <p>Security architecture designed for international compliance. GDPR, data sovereignty, and multi-region encryption strategies.</p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">✨</div>
+                    <div class="project-content">
+                        <h3>Interactive Portfolio Site</h3>
+                        <div>
+                            <span class="project-tag">Web Design</span>
+                            <span class="project-tag">Art + Tech</span>
+                        </div>
+                        <p>This very website! Showcasing how artistic sensibility enhances technical presentation. Modern design with smooth interactions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="interactive-section">
+        <div class="container">
+            <h2 class="section-title">Interactive Features</h2>
+            <p class="section-subtitle">Explore, engage, experiment</p>
+            
+            <div class="chatbot-placeholder">
+                <h3>🤖 AI Chatbot Integration</h3>
+                <p style="color: var(--text-gray); margin-bottom: 20px;">
+                    This space is reserved for an intelligent chatbot that can discuss my work across all three domains. Future integration with GPT or custom-trained model.
+                </p>
+                <p style="color: var(--cyan); font-size: 0.9em;">
+                    Coming soon: Ask me about international tech policy, architecture patterns, or artistic philosophy
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <h2 style="margin-bottom: 30px;">Let's Connect</h2>
+            <div class="contact-links">
+                <a href="mailto:ilkka@ruso.fi" class="contact-link">📧 Email</a>
+                <a href="https://linkedin.com/in/ilkkaruso" class="contact-link">💼 LinkedIn</a>
+                <a href="https://github.com/ilkkaruso" class="contact-link">💻 GitHub</a>
+            </div>
+            <p style="color: var(--text-gray); margin-top: 40px;">&copy; 2025 Ilkka Ruso. Bridging worlds through technology, diplomacy, and art.</p>
+        </div>
+    </footer>
+
+    <script>
+        function togglePillar(card) {
+            card.classList.toggle('expanded');
+            const btn = card.querySelector('.expand-btn');
+            if (card.classList.contains('expanded')) {
+                btn.textContent = 'Show less ←';
+            } else {
+                btn.textContent = 'Read more →';
+            }
+        }
+
+        // Smooth scroll for any future navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add parallax effect to hero background elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
