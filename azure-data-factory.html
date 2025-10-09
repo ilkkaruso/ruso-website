@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting up Azure Data Factory - Ilkka Ruso</title>
+    <meta name="description" content="A comprehensive guide to implementing Azure Data Factory with ADLS Gen2, Azure SQL Database, Key Vault, Logic Apps, and Azure Monitor.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --midnight: #0f172a;
+            --navy: #1e293b;
+            --purple: #a855f7;
+            --cyan: #06b6d4;
+            --gold: #fbbf24;
+            --text-light: #e2e8f0;
+            --text-gray: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--midnight);
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .back-link {
+            color: var(--cyan);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--purple);
+            transform: translateX(-5px);
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        /* Article Header */
+        .article-header {
+            margin-top: 100px;
+            padding: 80px 0 60px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(6, 182, 212, 0.1));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .article-header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .article-date {
+            color: var(--cyan);
+            font-size: 0.95em;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--purple), var(--cyan), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .meta-tag {
+            padding: 8px 20px;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid var(--purple);
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        /* Table of Contents */
+        .toc {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .toc h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin: 15px 0;
+        }
+
+        .toc a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc a:hover {
+            color: var(--cyan);
+            transform: translateX(5px);
+        }
+
+        /* Article Content */
+        .article-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: var(--gold);
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(168, 85, 247, 0.3);
+        }
+
+        h3 {
+            font-size: 1.8em;
+            margin: 40px 0 20px;
+            color: var(--cyan);
+        }
+
+        h4 {
+            font-size: 1.3em;
+            margin: 30px 0 15px;
+            color: var(--text-light);
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: var(--text-gray);
+            font-size: 1.1em;
+        }
+
+        .intro {
+            font-size: 1.2em;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(6, 182, 212, 0.1);
+            border-left: 4px solid var(--cyan);
+            border-radius: 5px;
+        }
+
+        /* Code Blocks */
+        code {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--cyan);
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-light);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 20px 0 20px 30px;
+            color: var(--text-gray);
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        .info-box.tip {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: var(--gold);
+        }
+
+        .info-box.warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+
+        .info-box.note {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--cyan);
+        }
+
+        .info-box-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Images */
+        .article-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(6, 182, 212, 0.2));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            margin: 40px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            max-width: 900px;
+            margin: 80px auto 0;
+            padding: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--text-gray);
+        }
+
+        .share-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .share-section h3 {
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            h2 {
+                font-size: 2em;
+            }
+
+            .nav-container,
+            .article-header-content,
+            .article-content,
+            .toc {
+                padding: 20px;
+            }
+
+            .article-meta {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="back-link">
+                ← Back to Solutions Architecture
+            </a>
+            <a href="index.html" class="logo">Ilkka Ruso</a>
+        </div>
+    </nav>
+
+    <!-- Article Header -->
+    <div class="article-header">
+        <div class="article-header-content">
+            <div class="article-date">January 2025</div>
+            <h1>Setting up Azure Data Factory</h1>
+            <p style="font-size: 1.2em; color: var(--text-gray);">
+                A comprehensive guide to implementing Azure Data Factory with modern best practices
+            </p>
+            <div class="article-meta">
+                <span class="meta-tag">ADLS Gen2</span>
+                <span class="meta-tag">Azure SQL Database</span>
+                <span class="meta-tag">Key Vault</span>
+                <span class="meta-tag">Logic Apps</span>
+                <span class="meta-tag">Azure Monitor</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#introduction">→ Introduction</a></li>
+            <li><a href="#adls-gen2">→ ADLS Gen2 Setup</a></li>
+            <li><a href="#azure-sql">→ Azure SQL Database Configuration</a></li>
+            <li><a href="#key-vault">→ Key Vault Integration</a></li>
+            <li><a href="#logic-apps">→ Logic Apps Orchestration</a></li>
+            <li><a href="#azure-monitor">→ Azure Monitor & Logging</a></li>
+            <li><a href="#conclusion">→ Conclusion</a></li>
+        </ul>
+    </div>
+
+    <!-- Article Content -->
+    <div class="article-content">
+        <section id="introduction" class="section">
+            <h2>Introduction</h2>
+            <p class="intro">
+                Azure Data Factory (ADF) is a cloud-based data integration service that allows you to create data-driven workflows for orchestrating data movement and transforming data at scale. This guide walks through setting up a production-ready ADF environment with best practices for security, monitoring, and integration.
+            </p>
+            
+            <p>
+                [Your introduction content here - explain why ADF, what problem it solves, and what readers will learn from this guide]
+            </p>
+
+            <div class="info-box note">
+                <div class="info-box-title">📘 Prerequisites</div>
+                <ul>
+                    <li>Active Azure subscription</li>
+                    <li>Basic understanding of Azure services</li>
+                    <li>Familiarity with data integration concepts</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="adls-gen2" class="section">
+            <h2>ADLS Gen2 Setup</h2>
+            
+            <p>
+                Azure Data Lake Storage Gen2 provides the foundation for your data lake architecture, combining the scalability of Azure Blob Storage with the hierarchical namespace and security features required for enterprise data lakes.
+            </p>
+
+            <h3>Creating the Storage Account</h3>
+            <p>
+                [Your content about creating and configuring ADLS Gen2]
+            </p>
+
+            <pre><code># Azure CLI command example
+az storage account create \
+  --name yourstorageaccount \
+  --resource-group your-rg \
+  --location westeurope \
+  --sku Standard_LRS \
+  --kind StorageV2 \
+  --hierarchical-namespace true</code></pre>
+
+            <h3>Configuring Containers and Directories</h3>
+            <p>
+                [Your content about organizing data in ADLS Gen2]
+            </p>
+
+            <div class="article-image">📊</div>
+
+            <div class="info-box tip">
+                <div class="info-box-title">💡 Best Practice</div>
+                <p>Organize your data lake with a clear folder structure: raw/ → staging/ → curated/ to maintain data quality and governance.</p>
+            </div>
+        </section>
+
+        <section id="azure-sql" class="section">
+            <h2>Azure SQL Database Configuration</h2>
+            
+            <p>
+                Setting up Azure SQL Database as your destination for processed data enables powerful querying and analytics capabilities.
+            </p>
+
+            <h3>Database Provisioning</h3>
+            <p>
+                [Your content about creating Azure SQL Database]
+            </p>
+
+            <h3>Schema Design</h3>
+            <p>
+                [Your content about designing database schema for ADF integration]
+            </p>
+
+            <pre><code>-- SQL script example
+CREATE TABLE dbo.YourTable (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    DataField NVARCHAR(255),
+    ProcessedDate DATETIME2,
+    SourceSystem NVARCHAR(100)
+);</code></pre>
+
+            <h3>Connection Configuration in ADF</h3>
+            <p>
+                [Your content about linking Azure SQL to ADF]
+            </p>
+        </section>
+
+        <section id="key-vault" class="section">
+            <h2>Key Vault Integration</h2>
+            
+            <p>
+                Azure Key Vault provides secure storage for connection strings, passwords, and other sensitive information used in your data pipelines.
+            </p>
+
+            <h3>Setting up Key Vault</h3>
+            <p>
+                [Your content about creating Key Vault]
+            </p>
+
+            <h3>Storing Secrets</h3>
+            <p>
+                [Your content about managing secrets]
+            </p>
+
+            <div class="info-box warning">
+                <div class="info-box-title">⚠️ Security Note</div>
+                <p>Never hardcode credentials in your pipelines. Always use Key Vault or managed identities for authentication.</p>
+            </div>
+
+            <h3>Linking Key Vault to Data Factory</h3>
+            <p>
+                [Your content about ADF and Key Vault integration]
+            </p>
+
+            <pre><code># Grant ADF access to Key Vault
+az keyvault set-policy \
+  --name your-keyvault \
+  --object-id [ADF-managed-identity] \
+  --secret-permissions get list</code></pre>
+        </section>
+
+        <section id="logic-apps" class="section">
+            <h2>Logic Apps Orchestration</h2>
+            
+            <p>
+                Azure Logic Apps enables you to orchestrate complex workflows, trigger ADF pipelines based on events, and handle error notifications.
+            </p>
+
+            <h3>Creating Event-Driven Workflows</h3>
+            <p>
+                [Your content about Logic Apps triggers]
+            </p>
+
+            <div class="article-image">⚡</div>
+
+            <h3>Pipeline Triggering</h3>
+            <p>
+                [Your content about triggering ADF from Logic Apps]
+            </p>
+
+            <h3>Error Handling and Notifications</h3>
+            <p>
+                [Your content about error handling strategies]
+            </p>
+        </section>
+
+        <section id="azure-monitor" class="section">
+            <h2>Azure Monitor & Logging</h2>
+            
+            <p>
+                Comprehensive monitoring and logging ensure you can track pipeline performance, troubleshoot issues, and maintain operational excellence.
+            </p>
+
+            <h3>Enabling Diagnostic Settings</h3>
+            <p>
+                [Your content about configuring monitoring]
+            </p>
+
+            <h3>Creating Alerts</h3>
+            <p>
+                [Your content about alert configuration]
+            </p>
+
+            <div class="info-box tip">
+                <div class="info-box-title">💡 Monitoring Best Practices</div>
+                <ul>
+                    <li>Set up alerts for pipeline failures</li>
+                    <li>Monitor data factory units (DFUs) consumption</li>
+                    <li>Track pipeline run duration trends</li>
+                    <li>Use Log Analytics for advanced querying</li>
+                </ul>
+            </div>
+
+            <h3>Dashboard Creation</h3>
+            <p>
+                [Your content about building monitoring dashboards]
+            </p>
+        </section>
+
+        <section id="conclusion" class="section">
+            <h2>Conclusion</h2>
+            
+            <p>
+                [Your conclusion summarizing what was covered and next steps]
+            </p>
+
+            <p>
+                In this guide, we've covered the essential components for setting up a production-ready Azure Data Factory environment. By integrating ADLS Gen2, Azure SQL Database, Key Vault, Logic Apps, and Azure Monitor, you've created a robust, secure, and observable data integration platform.
+            </p>
+
+            <h3>Next Steps</h3>
+            <ul>
+                <li>Implement CI/CD for your ADF pipelines</li>
+                <li>Explore incremental data loading patterns</li>
+                <li>Set up data quality validation</li>
+                <li>Configure disaster recovery</li>
+            </ul>
+        </section>
+
+        <div class="share-section">
+            <h3>Found this helpful?</h3>
+            <p>Share this article or reach out if you have questions about Azure Data Factory implementation.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Ilkka Ruso. All rights reserved.</p>
+        <p style="margin-top: 20px;">
+            <a href="index.html" style="color: var(--cyan); text-decoration: none;">← Back to Portfolio</a>
+        </p>
+    </footer>
+</body>
+</html>
